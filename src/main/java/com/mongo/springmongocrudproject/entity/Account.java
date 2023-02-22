@@ -1,10 +1,14 @@
-package com.mongo.springmongocrudproject.model;
+package com.mongo.springmongocrudproject.entity;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
+@Document(collection = "account")
 public class Account {
 
+    @Id
     private String id;
     private String accountNumber;
     private String accountName;
