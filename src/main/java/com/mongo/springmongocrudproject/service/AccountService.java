@@ -30,12 +30,12 @@ public class AccountService {
         return null;
     }
 
-   /* public List<Account> getAllAccountDetails() {
+    public List<Account> getAllAccountDetails() {
        List<com.mongo.springmongocrudproject.entity.Account> accountEntity =  accountDAO.findAll();
        return accountMapperImpl.listEntityToModel(accountEntity);
     }
 
     public Account getAccountByAccountNumber(String accountNumber) {
         return accountMapperImpl.mapEntityToModel(accountDAO.findByAccountNumber(accountNumber));
-    }*/
+    }
 }

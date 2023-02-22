@@ -25,12 +25,13 @@ public class AccountController {
         return new ResponseEntity<>("Input request Invalid please provide proper request",HttpStatus.BAD_REQUEST);
     }
 
-    /*@GetMapping("/getAllAccount")
+    @GetMapping("/getAllAccount")
     public ResponseEntity<List<Account>> getAllAccountDetails(){
         return new ResponseEntity<>(accountService.getAllAccountDetails(),HttpStatus.OK);
     }
 
+    @GetMapping("/getAccountByAccountNumber")
     public ResponseEntity<Account> getAccountDetailsByAccountNum(@RequestParam("accountNumber")String accountNumber){
         return new ResponseEntity<>(accountService.getAccountByAccountNumber(accountNumber),HttpStatus.OK);
-    }*/
+    }
 }
