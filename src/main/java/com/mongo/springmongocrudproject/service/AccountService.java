@@ -5,6 +5,7 @@ import com.mongo.springmongocrudproject.mapper.AccountMapper;
 import com.mongo.springmongocrudproject.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +37,39 @@ public class AccountService {
     }
 
     public Account getAccountByAccountNumber(String accountNumber) {
-        return accountMapperImpl.mapEntityToModel(accountDAO.findByAccountNumber(accountNumber));
+        List<com.mongo.springmongocrudproject.entity.Account> accountEntityList = accountDAO.findByAccountNumber(accountNumber);
+        if(Objects.nonNull(accountEntityList) && accountEntityList.size()<=1){
+           return  accountMapperImpl.mapEntityToModel(accountEntityList.stream().findFirst().get());
+
+        }
+        return null;
+    }
+
+    public String updateAccount(Account account) {
+        List<com.mongo.springmongocrudproject.entity.Account> accountList = accountDAO.findByAccountNumber(account.getAccountNumber());
+        if(!CollectionUtils.isEmpty(accountList) && accountList.size()>1){
+            return "Given accountNumber we found duplications please contact with your bank...!";
+        }
+        if(!CollectionUtils.isEmpty(accountList) && accountList.size()<=1){
+            account.setId(accountList.stream().findFirst().get().getId());
+            com.mongo.springmongocrudproject.entity.Account accountObj = accountDAO.save(accountMapperImpl.mapModelToEntity(account));
+            if(Objects.nonNull(accountObj)){
+                return "Updated successfully";
+            }
+        }
+        return "Given accountNumber not found in database";
+    }
+
+    public String deleteAccount(String accountNumber) {
+        List<com.mongo.springmongocrudproject.entity.Account> accountList = accountDAO.findByAccountNumber(accountNumber);
+        if(!CollectionUtils.isEmpty(accountList) && accountList.size()>1){
+            accountDAO.deleteAllByAccountNumber(accountNumber);
+            return "Given accountNumber we found duplications but we deleted successfully...!";
+        }
+        com.mongo.springmongocrudproject.entity.Account account = accountDAO.deleteByAccountNumber(accountNumber);
+        if(Objects.nonNull(account)){
+            return "AccountNumber deleted successfully";
+        }
+        return "AccountNumber not found in DB";
     }
 }

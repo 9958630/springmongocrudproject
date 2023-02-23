@@ -31,7 +31,36 @@ public class AccountController {
     }
 
     @GetMapping("/getAccountByAccountNumber")
-    public ResponseEntity<Account> getAccountDetailsByAccountNum(@RequestParam("accountNumber")String accountNumber){
-        return new ResponseEntity<>(accountService.getAccountByAccountNumber(accountNumber),HttpStatus.OK);
+    public ResponseEntity<Object> getAccountDetailsByAccountNum(@RequestParam("accountNumber")String accountNumber){
+        Account account = accountService.getAccountByAccountNumber(accountNumber);
+        if(Objects.nonNull(account))
+        return new ResponseEntity<Object>(accountService.getAccountByAccountNumber(accountNumber),HttpStatus.OK);
+        else
+            return new ResponseEntity<>("Data not found or duplication are found",HttpStatus.BAD_REQUEST);
+
     }
+
+    @PatchMapping("/updateAccount")
+    public ResponseEntity<String> updateAccount(@RequestBody Account account){
+        if(Objects.nonNull(account)){
+            String message = accountService.updateAccount(account);
+            if(message.contains("Updated successfully")) {
+                return new ResponseEntity<>(accountService.updateAccount(account),HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity <>(message, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
+    }
+
+    @DeleteMapping("/deleteAccount")
+    public ResponseEntity<String> deleteAccount(@RequestParam("accountNumber") String accountNumber){
+        String message = accountService.deleteAccount(accountNumber);
+        if(message.equalsIgnoreCase("AccountNumber deleted successfully")){
+            return new ResponseEntity<>(message,HttpStatus.OK);
+        }
+        return new ResponseEntity<>(message,HttpStatus.BAD_REQUEST);
+
+    }
+
+
 }
