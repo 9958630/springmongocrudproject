@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,6 +43,15 @@ public class AccountController {
 
     }
 
+    @GetMapping("/getAccountByAccNumAndAmount")
+    public ResponseEntity<Object> getAccountDetailsByAccountNum(@RequestParam("accountNumber")String accountNumber,@RequestParam("amount")Integer amount){
+        List<Account> account = accountService.getAccountByAccNumAndAmount(accountNumber,amount);
+        if(Objects.nonNull(account))
+            return new ResponseEntity<Object>(accountService.getAccountByAccNumAndAmount(accountNumber,amount),HttpStatus.OK);
+
+        return null;
+    }
+
     @PatchMapping("/updateAccount")
     public ResponseEntity<String> updateAccount(@RequestBody Account account){
         if(Objects.nonNull(account)){
@@ -63,4 +75,9 @@ public class AccountController {
     }
 
 
+    @GetMapping("/getDateFilter")
+    public ResponseEntity<Object> getDateFilter(@RequestParam("datefilter")String dateFilter) throws ParseException {
+            Date dt = new SimpleDateFormat("yyyy-MM-dd").parse(dateFilter);
+        return new ResponseEntity<Object>(accountService.getDateFilter(dt), HttpStatus.OK);
+    }
 }

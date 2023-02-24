@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,11 +39,16 @@ public class AccountService {
 
     public Account getAccountByAccountNumber(String accountNumber) {
         List<com.mongo.springmongocrudproject.entity.Account> accountEntityList = accountDAO.findByAccountNumber(accountNumber);
-        if(Objects.nonNull(accountEntityList) && accountEntityList.size()<=1){
+        if(!CollectionUtils.isEmpty(accountEntityList) && accountEntityList.size()<=1){
            return  accountMapperImpl.mapEntityToModel(accountEntityList.stream().findFirst().get());
 
         }
         return null;
+    }
+
+    public List<Account> getAccountByAccNumAndAmount(String accountNumber,Integer amount) {
+        List<com.mongo.springmongocrudproject.entity.Account> accountEntityList = accountDAO.findByAccountNumberAndAmount(accountNumber,amount);
+            return  accountMapperImpl.listEntityToModel(accountEntityList);
     }
 
     public String updateAccount(Account account) {
@@ -71,5 +77,9 @@ public class AccountService {
             return "AccountNumber deleted successfully";
         }
         return "AccountNumber not found in DB";
+    }
+
+    public List<Account> getDateFilter(Date start){
+        return accountMapperImpl.listEntityToModel(accountDAO.getDateFilter(start));
     }
 }
